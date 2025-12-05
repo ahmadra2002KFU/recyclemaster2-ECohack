@@ -1,0 +1,8 @@
+{
+  "name": "RecycleMaster",
+  "description": "An application to control a 3D printing filament recycling device, featuring AI-powered settings assistance and a voice-based support chatbot.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
