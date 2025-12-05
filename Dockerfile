@@ -24,18 +24,21 @@ RUN npm run build
 # Stage 2: Production image with nginx
 FROM nginx:alpine
 
-# Copy custom nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy nginx configuration template
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 
 # Copy built assets from builder stage (includes public assets)
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Expose port 80
-EXPOSE 80
+# Set default port (can be overridden by Coolify)
+ENV PORT=80
 
-# Health check
+# Expose the port
+EXPOSE ${PORT}
+
+# Health check - uses PORT variable
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost/ || exit 1
+  CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT}/ || exit 1
 
-# Start nginx
+# Start nginx (nginx will automatically process templates in /etc/nginx/templates/)
 CMD ["nginx", "-g", "daemon off;"]
